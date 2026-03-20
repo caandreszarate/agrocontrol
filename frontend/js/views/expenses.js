@@ -29,6 +29,7 @@ export const renderExpenses = async (container) => {
           <option value="trabajadores">Trabajadores</option>
           <option value="maquinaria">Maquinaria</option>
           <option value="insumos">Insumos</option>
+          <option value="alquiler">Alquiler Terreno</option>
           <option value="otros">Otros</option>
         </select>
         <select id="filter-phase">
@@ -216,7 +217,7 @@ const openExpenseModal = (expense, phases) => {
             <label>Categoría</label>
             <select name="category" required>
               <option value="">Seleccionar...</option>
-              ${['trabajadores','maquinaria','insumos','otros'].map(c =>
+              ${['trabajadores','maquinaria','insumos','alquiler','otros'].map(c =>
                 `<option value="${c}" ${expense?.category === c ? 'selected' : ''}>${catLabel(c)}</option>`
               ).join('')}
             </select>
@@ -298,6 +299,7 @@ const catLabel = (cat) => ({
   trabajadores: 'Trabajadores',
   maquinaria: 'Maquinaria',
   insumos: 'Insumos',
+  alquiler: 'Alquiler Terreno',
   otros: 'Otros',
   arriendo: 'Arriendo'
 }[cat] || cat);

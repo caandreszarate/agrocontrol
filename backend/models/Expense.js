@@ -20,7 +20,7 @@ const expenseSchema = new mongoose.Schema({
   category: {
     type: String,
     required: [true, 'La categoría es requerida'],
-    enum: ['trabajadores', 'maquinaria', 'insumos', 'otros']
+    enum: ['trabajadores', 'maquinaria', 'insumos', 'alquiler', 'otros']
   },
   phase: {
     type: mongoose.Schema.Types.ObjectId,

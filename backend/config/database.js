@@ -4,8 +4,8 @@ const connectDB = async () => {
   try {
     // Fix: Railway puede decodificar '+' como espacio en la URI
     const rawUri = process.env.MONGODB_URI || '';
-    // Limpiar prefijos basura que Railway agrega (ej: "%20=", " =", "=")
-    const uri = rawUri.replace(/^[^m]*(mongodb)/i, 'mongodb');
+    // Limpiar prefijos basura y saltos de línea que Railway puede agregar
+    const uri = rawUri.replace(/^[^m]*(mongodb)/i, 'mongodb').replace(/[\r\n\s]+/g, '');
 
     console.log(`[DB] URI prefix: "${uri.substring(0, 20)}..."`);
 

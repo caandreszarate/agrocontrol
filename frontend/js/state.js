@@ -53,8 +53,11 @@ const State = (() => {
 
   const isAuthenticated = () => !!_state.token;
   const isAdmin = () => _state.user?.role === 'admin';
+  const isJefeCultivo = () => _state.user?.role === 'jefecultivo';
+  const canEditCalendar = () => ['admin', 'jefecultivo'].includes(_state.user?.role);
+  const getRole = () => _state.user?.role || 'viewer';
 
-  return { get, set, subscribe, initAuth, saveAuth, clearAuth, isAuthenticated, isAdmin };
+  return { get, set, subscribe, initAuth, saveAuth, clearAuth, isAuthenticated, isAdmin, isJefeCultivo, canEditCalendar, getRole };
 })();
 
 export default State;

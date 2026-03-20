@@ -37,4 +37,12 @@ const adminOnly = (req, res, next) => {
   next();
 };
 
-module.exports = { protect, adminOnly };
+// Admin y jefecultivo pueden crear/editar/eliminar eventos de calendario
+const calendarWrite = (req, res, next) => {
+  if (!['admin', 'jefecultivo'].includes(req.user.role)) {
+    return res.status(403).json({ success: false, message: 'Acceso denegado — sin permisos de escritura en calendario' });
+  }
+  next();
+};
+
+module.exports = { protect, adminOnly, calendarWrite };

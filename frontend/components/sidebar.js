@@ -4,13 +4,13 @@
 import State from '../js/state.js';
 
 const NAV_ITEMS = [
-  { id: 'dashboard', label: 'Dashboard', icon: '📊', section: 'principal' },
-  { id: 'expenses', label: 'Gastos', icon: '💸', section: 'gestión' },
-  { id: 'phases', label: 'Fases', icon: '🌱', section: 'gestión' },
-  { id: 'payments', label: 'Pagos', icon: '📅', section: 'gestión' },
-  { id: 'production', label: 'Producción', icon: '🍌', section: 'gestión' },
-  { id: 'calendar', label: 'Calendario', icon: '🗓️', section: 'gestión' },
-  { id: 'settings', label: 'Ajustes', icon: '⚙️', section: 'sistema' }
+  { id: 'dashboard', label: 'Dashboard', icon: '📊', section: 'principal', roles: ['admin', 'viewer'] },
+  { id: 'expenses', label: 'Gastos', icon: '💸', section: 'gestión', roles: ['admin', 'viewer'] },
+  { id: 'phases', label: 'Fases', icon: '🌱', section: 'gestión', roles: ['admin', 'viewer'] },
+  { id: 'payments', label: 'Pagos', icon: '📅', section: 'gestión', roles: ['admin', 'viewer'] },
+  { id: 'production', label: 'Producción', icon: '🍌', section: 'gestión', roles: ['admin', 'viewer'] },
+  { id: 'calendar', label: 'Calendario', icon: '🗓️', section: 'gestión', roles: ['admin', 'jefecultivo', 'viewer'] },
+  { id: 'settings', label: 'Ajustes', icon: '⚙️', section: 'sistema', roles: ['admin'] }
 ];
 
 export const renderSidebar = () => {
@@ -19,10 +19,11 @@ export const renderSidebar = () => {
 
   const user = State.get('user');
   const currentRoute = State.get('currentRoute');
+  const role = State.getRole();
 
-  // Agrupar por sección
+  // Filtrar por rol y agrupar por sección
   const sections = {};
-  NAV_ITEMS.forEach(item => {
+  NAV_ITEMS.filter(item => item.roles.includes(role)).forEach(item => {
     if (!sections[item.section]) sections[item.section] = [];
     sections[item.section].push(item);
   });
@@ -52,7 +53,7 @@ export const renderSidebar = () => {
         <div class="user-avatar">${user?.name?.[0]?.toUpperCase() || 'U'}</div>
         <div class="user-details">
           <strong>${user?.name || 'Usuario'}</strong>
-          <span>${user?.role === 'admin' ? '🔑 Admin' : '👁 Viewer'}</span>
+          <span>${role === 'admin' ? '🔑 Admin' : role === 'jefecultivo' ? '🌿 Jefe Cultivo' : '👁 Viewer'}</span>
         </div>
       </div>
       <button class="btn btn-ghost btn-sm" id="logout-btn" style="margin-top:0.5rem;width:100%">

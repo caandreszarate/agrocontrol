@@ -29,7 +29,7 @@ export const renderCalendar = async (container) => {
         <h1 class="page-title">Calendario Agrícola</h1>
         <p class="page-subtitle">Actividades y eventos del cultivo</p>
       </div>
-      ${State.isAdmin() ? '<button class="btn btn-primary" id="new-event-btn">+ Nuevo Evento</button>' : ''}
+      ${State.canEditCalendar() ? '<button class="btn btn-primary" id="new-event-btn">+ Nuevo Evento</button>' : ''}
     </div>
     <div class="card">
       <div id="calendar-nav" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
@@ -114,7 +114,7 @@ const renderGrid = (events) => {
 
     html += `
       <div class="calendar-day ${isToday ? 'today' : ''} ${dayEvents.length > 0 ? 'has-events' : ''}"
-           ${State.isAdmin() ? `data-create-day="${d}"` : ''}>
+           ${State.canEditCalendar() ? `data-create-day="${d}"` : ''}>
         <div class="day-number">${d}</div>
         <div class="day-events">
           ${dayEvents.slice(0, 3).map(e => `
@@ -140,7 +140,7 @@ const renderGrid = (events) => {
   grid.innerHTML = html;
 
   // Click en día para crear evento
-  if (State.isAdmin()) {
+  if (State.canEditCalendar()) {
     grid.querySelectorAll('[data-create-day]').forEach(dayEl => {
       dayEl.addEventListener('click', () => {
         const d = parseInt(dayEl.dataset.createDay);
@@ -173,7 +173,7 @@ const renderEventsList = (events) => {
             </div>
             ${e.notes ? `<div style="font-size:0.75rem;color:var(--color-text-secondary);margin-top:2px">${e.notes}</div>` : ''}
           </div>
-          ${State.isAdmin() ? `
+          ${State.canEditCalendar() ? `
             <div class="flex gap-2">
               <button class="btn btn-ghost btn-sm" data-edit-event="${e._id}">✏️</button>
               <button class="btn btn-ghost btn-sm" data-delete-event="${e._id}">🗑️</button>

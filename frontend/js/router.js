@@ -13,15 +13,16 @@ import { renderProduction } from './views/production.js';
 import { renderCalendar } from './views/calendar.js';
 import { renderSettings } from './views/settings.js';
 
+// roles: qué roles pueden acceder. Si no se define, solo admin.
 const ROUTES = {
-  '/login': { render: renderLogin, public: true },
-  '/dashboard': { render: renderDashboard },
-  '/expenses': { render: renderExpenses },
-  '/phases': { render: renderPhases },
-  '/payments': { render: renderPayments },
-  '/production': { render: renderProduction },
-  '/calendar': { render: renderCalendar },
-  '/settings': { render: renderSettings }
+  '/login':      { render: renderLogin, public: true },
+  '/dashboard':  { render: renderDashboard, roles: ['admin', 'viewer'] },
+  '/expenses':   { render: renderExpenses,  roles: ['admin', 'viewer'] },
+  '/phases':     { render: renderPhases,    roles: ['admin', 'viewer'] },
+  '/payments':   { render: renderPayments,  roles: ['admin', 'viewer'] },
+  '/production': { render: renderProduction,roles: ['admin', 'viewer'] },
+  '/calendar':   { render: renderCalendar,  roles: ['admin', 'jefecultivo', 'viewer'] },
+  '/settings':   { render: renderSettings,  roles: ['admin'] }
 };
 
 const getRoute = () => {
@@ -87,8 +88,18 @@ export const initRouter = () => {
     }
 
     if (view.public && State.isAuthenticated()) {
-      window.location.hash = '#/dashboard';
+      const role = State.getRole();
+      window.location.hash = role === 'jefecultivo' ? '#/calendar' : '#/dashboard';
       return;
+    }
+
+    // Role guard
+    if (!view.public && view.roles) {
+      const role = State.getRole();
+      if (!view.roles.includes(role)) {
+        window.location.hash = role === 'jefecultivo' ? '#/calendar' : '#/dashboard';
+        return;
+      }
     }
 
     renderApp(route, view);

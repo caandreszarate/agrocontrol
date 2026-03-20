@@ -53,6 +53,16 @@ async function seed() {
     });
     console.log('Viewer creado');
 
+    // Crear jefe de cultivo
+    await User.create({
+      name: 'Jefe de Cultivo',
+      email: 'jefecultivo@agrocontrol.com',
+      password: 'Jefe2024!',
+      role: 'jefecultivo',
+      isActive: true
+    });
+    console.log('Jefe de cultivo creado');
+
     // Crear fases
     const phases = await Phase.insertMany(PHASES_DATA);
     console.log(`${phases.length} fases creadas`);

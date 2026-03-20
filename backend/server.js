@@ -36,6 +36,26 @@ app.get('/api/health', (req, res) => {
   res.json({ success: true, message: 'AgroControl API funcionando', timestamp: new Date() });
 });
 
+// Diagnóstico temporal — remover después
+app.get('/api/debug', async (req, res) => {
+  const mongoose = require('mongoose');
+  const User = require('./models/User');
+  try {
+    const dbState = mongoose.connection.readyState;
+    const states = { 0: 'disconnected', 1: 'connected', 2: 'connecting', 3: 'disconnecting' };
+    const userCount = await User.countDocuments();
+    const users = await User.find().select('email role isActive');
+    res.json({
+      dbState: states[dbState],
+      dbName: mongoose.connection.name,
+      userCount,
+      users
+    });
+  } catch (err) {
+    res.json({ error: err.message });
+  }
+});
+
 // Rutas
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/expenses', require('./routes/expenses'));

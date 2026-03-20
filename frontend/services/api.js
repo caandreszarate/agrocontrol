@@ -2,9 +2,9 @@
 // API Client — AgroControl
 // ===================================================
 const API_BASE = (() => {
-  const saved = localStorage.getItem('agro_api_url');
-  if (saved) return `${saved}/api`;
   const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+  const saved = localStorage.getItem('agro_api_url');
+  if (saved && isLocal) return `${saved}/api`;
   return isLocal
     ? 'http://localhost:3000/api'
     : 'https://agrocontrol-production.up.railway.app/api';

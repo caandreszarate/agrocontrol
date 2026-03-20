@@ -34,7 +34,8 @@ export const formatCurrency = (amount, short = false) => {
 
 export const formatDate = (dateStr, opts = {}) => {
   if (!dateStr) return '—';
-  const date = new Date(dateStr);
+  const [year, month, day] = dateStr.split('T')[0].split('-').map(Number);
+  const date = new Date(year, month - 1, day);
   if (isNaN(date)) return '—';
   const defaults = { day: '2-digit', month: 'short', year: 'numeric' };
   return date.toLocaleDateString('es-CO', { ...defaults, ...opts });
@@ -42,9 +43,8 @@ export const formatDate = (dateStr, opts = {}) => {
 
 export const formatDateInput = (dateStr) => {
   if (!dateStr) return '';
-  const date = new Date(dateStr);
-  if (isNaN(date)) return '';
-  return date.toISOString().split('T')[0];
+  const [year, month, day] = dateStr.split('T')[0].split('-').map(Number);
+  return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 };
 
 export const relativeDate = (dateStr) => {

@@ -92,7 +92,7 @@ const renderGrid = (events) => {
   // Agrupar eventos por día
   const eventsByDay = {};
   events.forEach(e => {
-    const day = new Date(e.date).getDate();
+    const day = parseInt(e.date.split('T')[0].split('-')[2]);
     if (!eventsByDay[day]) eventsByDay[day] = [];
     eventsByDay[day].push(e);
   });

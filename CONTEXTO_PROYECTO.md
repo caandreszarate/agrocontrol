@@ -1,5 +1,5 @@
 # CONTEXTO COMPLETO — AgroControl Plátano Hartón
-> Archivo de recuperación de contexto para Claude. Actualizado: 2026-03-19
+> Archivo de recuperación de contexto para Claude. Actualizado: 2026-03-20
 
 ---
 
@@ -7,22 +7,84 @@
 
 Sistema web de gestión agrícola para un cultivo de **plátano hartón en Granada, Meta, Colombia**.
 
-**Propietario del proyecto:** Carlos Martínez
+**Propietario:** Carlos Martínez (GitHub: `caandreszarate`)
 **Ruta local:** `/Users/carlosmartinez/Documents/app_agricola/`
+
+---
+
+## ESTADO ACTUAL — ✅ PRODUCCIÓN FUNCIONANDO
+
+### ✅ Frontend — GitHub Pages
+- **URL:** `https://caandreszarate.github.io/agrocontrol/`
+- **Rama:** `gh-pages` (solo archivos frontend en raíz)
+- **Estado:** Desplegado y funcionando
+
+### ✅ Backend — Railway
+- **URL pública:** `https://agrocontrol-production.up.railway.app`
+- **URL interna:** `agrocontrol.railway.internal`
+- **Estado:** ✅ Desplegado, conectado a MongoDB Atlas, login funciona
+
+### ✅ MongoDB Atlas
+- **Cluster:** `cluster0.zvzj8xv.mongodb.net`
+- **Usuario DB:** `caandreszarate_db_user`
+- **Password DB:** `[ver en Railway → Variables o en .env local]`
+- **Base de datos:** `agrocontrol`
+- **URI completa:**
+  ```
+  mongodb+srv://caandreszarate_db_user:[PASSWORD]@cluster0.zvzj8xv.mongodb.net/agrocontrol?retryWrites=true&w=majority&appName=Cluster0
+  ```
+- **Usuarios en DB:** 2 (admin + viewer, creados con `npm run seed`)
+
+---
+
+## CREDENCIALES DEMO
+
+```
+Admin:  admin@agrocontrol.com  /  Admin2024!
+Viewer: viewer@agrocontrol.com /  Viewer2024!
+```
+
+---
+
+## HISTORIAL DE PROBLEMAS RESUELTOS
+
+| # | Problema | Causa | Fix |
+|---|----------|-------|-----|
+| 1 | `npm: command not found` en Railway | Nixpacks no encontraba Node.js (package.json en subcarpeta `backend/`) | `nixpacks.toml` con `nodejs_20` |
+| 2 | `undefined variable 'npm-9_x'` | Nombre de paquete Nix inválido | Eliminado `npm-9_x`; `nodejs_20` ya incluye npm |
+| 3 | `MONGODB_URI` undefined en Railway | Variables de entorno no configuradas | Agregar variables manualmente en Railway |
+| 4 | URI con prefijo `%20=mongodb+srv://` | Railway codificaba mal el valor pegado en Raw Editor | Fix regex en `database.js`: `rawUri.replace(/^[^m]*(mongodb)/i, 'mongodb')` |
+| 5 | Login 401 en producción | Railway conectaba a BD `agr` en vez de `agrocontrol` | Fix en `database.js`: `.replace(/[\r\n\s]+/g, '')` para eliminar saltos de línea en la URI |
+| 6 | `userCount: 0` | BD correcta pero sin usuarios | `npm run seed` local pobló Atlas |
+| 7 | gh-pages con `node_modules` | Primera copia incluía todo el proyecto | Usar directorio temporal solo con archivos frontend |
+
+---
+
+## VARIABLES DE ENTORNO RAILWAY (correctas)
+
+```
+MONGODB_URI=mongodb+srv://caandreszarate_db_user:[PASSWORD]@cluster0.zvzj8xv.mongodb.net/agrocontrol?retryWrites=true&w=majority&appName=Cluster0
+JWT_SECRET=agrocontrol_jwt_secret_2024_granada_meta
+JWT_EXPIRES_IN=24h
+NODE_ENV=production
+FRONTEND_URL=https://caandreszarate.github.io
+```
+
+> **IMPORTANTE:** Si vuelves a editar `MONGODB_URI` en Railway, usa el botón "New Variable" y no el Raw Editor — el Raw Editor a veces inserta saltos de línea invisibles que truncan el nombre de la BD.
 
 ---
 
 ## STACK TÉCNICO
 
-| Capa | Tecnología | Notas |
-|------|------------|-------|
-| Frontend | HTML5 + CSS3 + Vanilla JS (ES Modules) | SPA con hash routing, sin framework |
-| Backend | Node.js + Express | API REST |
-| Base de datos | MongoDB (Atlas) + Mongoose ODM | |
-| Auth | JWT + bcryptjs | Token en localStorage, 24h expiry |
-| Deploy Frontend | GitHub Pages | Requiere sin build step |
-| Deploy Backend | Railway o Render | Variables de entorno vía panel |
-| Gráficas | Chart.js 4.x (CDN) | Cargado on-demand |
+| Capa | Tecnología |
+|------|------------|
+| Frontend | HTML5 + CSS3 + Vanilla JS (ES Modules) — SPA hash routing |
+| Backend | Node.js + Express — API REST |
+| Base de datos | MongoDB Atlas + Mongoose |
+| Auth | JWT 24h + bcryptjs |
+| Deploy Frontend | GitHub Pages (rama `gh-pages`) |
+| Deploy Backend | Railway (repo `caandreszarate/agrocontrol`, carpeta `backend/`) |
+| Gráficas | Chart.js 4.x CDN |
 
 ---
 
@@ -30,144 +92,61 @@ Sistema web de gestión agrícola para un cultivo de **plátano hartón en Grana
 
 ```
 app_agricola/
-├── docs/
-│   ├── idea.md            — Concepto del proyecto
-│   ├── prompt.md          — Decisiones técnicas justificadas
-│   ├── spec.md            — Especificación completa (modelos + API)
-│   ├── roadmap.md         — Fases de desarrollo
-│   └── tasks.md           — Checklist de tareas
-│
+├── CONTEXTO_PROYECTO.md     ← este archivo
+├── railway.json             ← config Railway (apunta a backend/)
+├── nixpacks.toml            ← Node.js 20 para Railway
+├── .gitignore
+├── docs/                    ← idea, spec, roadmap, tasks, prompt
 ├── backend/
-│   ├── server.js          — Entry point Express
-│   ├── package.json
+│   ├── server.js            ← Express app (puerto $PORT o 3000)
+│   ├── .env                 ← LOCAL ONLY (no en git)
 │   ├── .env.example
-│   ├── config/
-│   │   └── database.js    — Conexión MongoDB
-│   ├── models/
-│   │   ├── User.js
-│   │   ├── Expense.js
-│   │   ├── Phase.js
-│   │   ├── ScheduledPayment.js
-│   │   ├── ProductionRecord.js
-│   │   └── CalendarEvent.js
-│   ├── middleware/
-│   │   ├── auth.js         — JWT protect + adminOnly
-│   │   ├── errorHandler.js
-│   │   └── rateLimiter.js
-│   ├── controllers/
-│   │   ├── authController.js
-│   │   ├── expenseController.js
-│   │   ├── phaseController.js
-│   │   ├── paymentController.js
-│   │   ├── productionController.js
-│   │   ├── calendarController.js
-│   │   └── dashboardController.js
-│   ├── routes/
-│   │   ├── auth.js
-│   │   ├── expenses.js
-│   │   ├── phases.js
-│   │   ├── payments.js
-│   │   ├── production.js
-│   │   ├── calendar.js
-│   │   └── dashboard.js
-│   └── scripts/
-│       └── seed.js         — Datos demo + 2 users + 7 fases
-│
+│   ├── config/database.js   ← Fix URI Railway: regex limpia prefijos y saltos de línea
+│   ├── models/              ← User, Expense, Phase, ScheduledPayment, ProductionRecord, CalendarEvent
+│   ├── middleware/          ← auth.js (JWT), errorHandler.js, rateLimiter.js
+│   ├── controllers/         ← auth, expense, phase, payment, production, calendar, dashboard
+│   ├── routes/              ← auth, expenses, phases, payments, production, calendar, dashboard
+│   └── scripts/seed.js      ← Crea 7 fases + admin + viewer + datos demo
 └── frontend/
-    ├── index.html          — SPA entry point
-    ├── css/
-    │   ├── variables.css   — Design tokens + tema oscuro automático
-    │   ├── base.css        — Reset + tipografía + botones + tabla
-    │   ├── layout.css      — Sidebar + header + grid
-    │   ├── components.css  — KPIs, modal, toast, phases, payments...
-    │   ├── animations.css  — keyframes
-    │   └── responsive.css  — Breakpoints móvil
+    ├── index.html
+    ├── assests/img/hero_agricultura.jpg   ← OJO: "assests" con typo intencional
+    ├── css/                 ← variables, base, layout, components, animations, responsive
     ├── js/
-    │   ├── app.js          — Entry point (initTheme + initAuth + initRouter)
-    │   ├── state.js        — Estado global (auth, route)
-    │   ├── router.js       — Hash routing SPA
-    │   ├── ui.js           — Helpers DOM + formatters
-    │   └── views/
-    │       ├── login.js
-    │       ├── dashboard.js  — KPIs + Chart.js (doughnut + bar)
-    │       ├── expenses.js   — CRUD + filtros + paginación
-    │       ├── phases.js     — 7 fases con progreso visual + fotos
-    │       ├── payments.js   — Pagos con alertas vencidos/próximos
-    │       ├── production.js — Cosechas + ROI + preview ingresos
-    │       ├── calendar.js   — Calendario mensual + eventos
-    │       └── settings.js   — Tema + API URL + perfil
-    ├── services/
-    │   ├── api.js           — Fetch wrapper con auth + 401 redirect
-    │   ├── authService.js
-    │   ├── expenseService.js
-    │   ├── phaseService.js
-    │   ├── paymentService.js
-    │   ├── productionService.js
-    │   ├── calendarService.js
-    │   └── dashboardService.js
-    └── components/
-        ├── sidebar.js       — Nav con iconos emoji
-        ├── header.js        — Título + toggle tema + alertas badge
-        ├── modal.js         — Modal reutilizable genérico
-        └── toast.js         — Notificaciones temporales
+    │   ├── app.js, router.js, state.js, ui.js
+    │   └── views/           ← login, dashboard, expenses, phases, payments, production, calendar, settings
+    ├── services/            ← api.js (API_BASE auto: localhost dev / Railway prod)
+    └── components/          ← sidebar, header, modal, toast
 ```
 
 ---
 
-## COLECCIONES MONGODB
+## GITHUB
 
-| Colección | Campos clave |
-|-----------|-------------|
-| `users` | name, email, password(hashed), role(admin/viewer), isActive |
-| `expenses` | date, amount, description, category, phase→Phase, createdBy→User |
-| `phases` | name, order(1-7), status, progressPercent, startDate, endDate, imageUrls[] |
-| `scheduledpayments` | description, amount, dueDate, category, isPaid, paidAt |
-| `productionrecords` | date, bunchesHarvested, weightKg, pricePerKg, totalRevenue |
-| `calendarevents` | title, date, type, phase→Phase, notes |
+- **Repo:** `https://github.com/caandreszarate/agrocontrol`
+- **Rama main:** código fuente completo
+- **Rama gh-pages:** solo frontend (se actualiza con force push desde temp dir)
+- **Token GitHub:** `ghp_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX` ← ver localmente en `.env` o generar nuevo en GitHub
 
----
-
-## API ENDPOINTS
-
+### Comando para actualizar gh-pages
+```bash
+TMPDIR=$(mktemp -d)
+cp -r /Users/carlosmartinez/Documents/app_agricola/frontend/. "$TMPDIR/"
+cd "$TMPDIR"
+git init && git config user.email "caandreszarate@github.com" && git config user.name "caandreszarate"
+git checkout -b gh-pages && git add . && git commit -m "deploy: mensaje"
+git remote add origin https://TU_TOKEN@github.com/caandreszarate/agrocontrol.git
+git push origin gh-pages --force
 ```
-GET  /api/health                    — Sin auth, health check
-POST /api/auth/login                — Rate limited (10/15min)
-POST /api/auth/register             — Requiere auth (admin crea viewers)
-GET  /api/auth/profile              — Requiere auth
 
-GET  /api/dashboard                 — KPIs + alertas + gráficas
-
-GET  /api/expenses                  — Filtros: category, phase, startDate, endDate, page, limit
-POST /api/expenses                  — Admin only
-PUT  /api/expenses/:id              — Admin only
-DELETE /api/expenses/:id            — Admin only
-GET  /api/expenses/summary          — Totales por categoría y fase
-
-GET  /api/phases                    — Ordenadas por order
-GET  /api/phases/:id/detail         — Fase + gastos
-PUT  /api/phases/:id                — Admin only (progressPercent auto-ajusta status)
-
-GET  /api/payments                  — Filtros: isPaid, startDate, endDate
-POST /api/payments                  — Admin only
-PUT  /api/payments/:id              — Admin only
-PATCH /api/payments/:id/pay         — Admin only (marca como pagado)
-DELETE /api/payments/:id            — Admin only
-
-GET  /api/production                — Paginado
-POST /api/production                — Admin only (totalRevenue = weightKg * pricePerKg)
-PUT  /api/production/:id            — Admin only
-DELETE /api/production/:id          — Admin only
-GET  /api/production/summary        — Totales + ROI
-
-GET  /api/calendar                  — Filtro: month, year
-POST /api/calendar                  — Admin only
-PUT  /api/calendar/:id              — Admin only
-DELETE /api/calendar/:id            — Admin only
+### Comando para actualizar main
+```bash
+cd /Users/carlosmartinez/Documents/app_agricola
+git add . && git commit -m "mensaje" && git push origin main
 ```
 
 ---
 
-## FASES DEL CULTIVO (seed inicial)
+## FASES DEL CULTIVO (seed)
 
 1. Alquiler del terreno
 2. Alistamiento del terreno
@@ -179,101 +158,61 @@ DELETE /api/calendar/:id            — Admin only
 
 ---
 
-## CREDENCIALES DEMO (post-seed)
+## DISEÑO LOGIN
 
-```
-Admin:  admin@agrocontrol.com  /  Admin2024!
-Viewer: viewer@agrocontrol.com /  Viewer2024!
-```
-
----
-
-## CATEGORÍAS
-
-**Gastos:** trabajadores | maquinaria | insumos | otros
-**Pagos programados:** + arriendo
-**Eventos calendario:** abono | limpieza | cosecha | pago | siembra | otro
+Login tipo hero de dos columnas:
+- **Izquierda:** imagen `assests/img/hero_agricultura.jpg` + overlay verde + título "Del campo a tus datos" + 3 stats
+- **Derecha:** formulario con ícono toggle password, shake animation en error, feedback visual en éxito
 
 ---
 
-## DISEÑO / UX
+## ARCHIVOS CLAVE — FIXES APLICADOS
 
-- Tema claro/oscuro automático via `prefers-color-scheme` + override manual
-- Design tokens en `css/variables.css` (colores, espaciados, sombras)
-- Color primario: **#22c55e** (verde agrícola)
-- Color acento: **#f59e0b** (tierra/dorado)
-- Sidebar fijo en desktop, overlay en móvil (breakpoint 768px)
-- Modales reutilizables vía `modal.js`
-- Toasts para feedback: success/error/warning/info
-- KPI Cards con accent color variable por CSS custom property
-
----
-
-## PASOS PARA ARRANCAR
-
-### Backend
-```bash
-cd /Users/carlosmartinez/Documents/app_agricola/backend
-npm install
-cp .env.example .env
-# Editar .env con MONGODB_URI real
-npm run seed    # Crear fases y usuarios demo
-npm run dev     # Servidor en puerto 3000
+### `backend/config/database.js`
+```js
+const rawUri = process.env.MONGODB_URI || '';
+const uri = rawUri.replace(/^[^m]*(mongodb)/i, 'mongodb').replace(/[\r\n\s]+/g, '');
 ```
 
-### Frontend
-```bash
-# Opción 1: Live Server (VS Code extension)
-# Click derecho en index.html → Open with Live Server
+### `frontend/services/api.js`
+```js
+const API_BASE = (() => {
+  const saved = localStorage.getItem('agro_api_url');
+  if (saved) return `${saved}/api`;
+  const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+  return isLocal
+    ? 'http://localhost:3000/api'
+    : 'https://agrocontrol-production.up.railway.app/api';
+})();
+```
 
-# Opción 2: Python
-cd /Users/carlosmartinez/Documents/app_agricola/frontend
-python3 -m http.server 5500
-
-# Opción 3: npx
-npx serve frontend/
+### `nixpacks.toml`
+```toml
+[phases.setup]
+nixPkgs = ["nodejs_20"]
+[phases.install]
+cmds = ["cd backend && npm install"]
+[phases.build]
+cmds = []
+[start]
+cmd = "cd backend && node server.js"
 ```
 
 ---
 
-## DEPLOY PRODUCCIÓN
+## COMMITS RELEVANTES
 
-### Backend — Railway
-1. Crear proyecto en railway.app
-2. Conectar repo GitHub
-3. Variables de entorno:
-   - `MONGODB_URI` = connection string Atlas
-   - `JWT_SECRET` = string aleatorio largo
-   - `FRONTEND_URL` = https://tuusuario.github.io/agrocontrol
-   - `NODE_ENV` = production
-
-### Frontend — GitHub Pages
-1. Poner carpeta `frontend/` como root del repo (o configurar source folder)
-2. Antes de subir, actualizar `API_BASE` en `frontend/services/api.js` con la URL de Railway
-3. Settings → Pages → Branch: main / folder: /frontend
+| Commit | Descripción |
+|--------|-------------|
+| `58ab61e` | Initial commit: Sistema Agrícola completo |
+| `289abbd` | fix: add /api/debug endpoint + fix MONGODB_URI prefix (Railway) |
+| `edb9909` | fix: strip newlines from MONGODB_URI before connect |
+| último | fix: remove /api/debug endpoint (problema resuelto) |
 
 ---
 
-## PENDIENTES / MEJORAS FUTURAS
+## PENDIENTES
 
-- [ ] Cambio de contraseña desde settings
-- [ ] Exportar gastos a CSV/Excel
-- [ ] Notificaciones push para pagos (Service Worker)
-- [ ] Fotos subidas directamente (no solo URLs externas)
-- [ ] Multiusuario: crear users desde el panel admin
-- [ ] Gráfica producción vs gastos en el tiempo (vista producción)
-- [ ] PWA (offline capability)
-
----
-
-## CONTEXTO PARA CONTINUAR
-
-Si la memoria se resetea, este archivo contiene TODO lo necesario.
-El proyecto está **completamente funcional** — solo requiere:
-1. `npm install` en `/backend`
-2. Configurar `.env` con MongoDB URI
-3. `npm run seed`
-4. Abrir `frontend/index.html` con Live Server
-
-**Última modificación:** 2026-03-19
-**Estado:** ✅ Desarrollo completo — listo para configuración de deploy
+- [ ] Probar todas las secciones del dashboard con datos reales
+- [ ] Verificar que Chart.js carga correctamente en producción
+- [ ] Opcional: agregar más usuarios o roles según necesidad

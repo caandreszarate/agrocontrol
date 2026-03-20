@@ -1,0 +1,167 @@
+/* ===================================================
+   Design Tokens — AgroControl
+   =================================================== */
+:root {
+  /* Colores base — Tema claro */
+  --color-bg: #f5f7fa;
+  --color-bg-secondary: #ffffff;
+  --color-bg-tertiary: #eef1f5;
+  --color-surface: #ffffff;
+  --color-surface-hover: #f0f4f8;
+  --color-border: #e2e8f0;
+  --color-border-strong: #cbd5e1;
+
+  /* Texto */
+  --color-text: #1e293b;
+  --color-text-secondary: #64748b;
+  --color-text-tertiary: #94a3b8;
+  --color-text-inverse: #ffffff;
+
+  /* Brand — Verde agrícola */
+  --color-primary: #22c55e;
+  --color-primary-dark: #16a34a;
+  --color-primary-light: #dcfce7;
+  --color-primary-subtle: #f0fdf4;
+
+  /* Acento — Tierra */
+  --color-accent: #f59e0b;
+  --color-accent-dark: #d97706;
+  --color-accent-light: #fef3c7;
+
+  /* Semánticos */
+  --color-success: #22c55e;
+  --color-success-bg: #f0fdf4;
+  --color-warning: #f59e0b;
+  --color-warning-bg: #fffbeb;
+  --color-danger: #ef4444;
+  --color-danger-bg: #fef2f2;
+  --color-info: #3b82f6;
+  --color-info-bg: #eff6ff;
+
+  /* Categorías de gastos */
+  --cat-trabajadores: #8b5cf6;
+  --cat-maquinaria: #f59e0b;
+  --cat-insumos: #22c55e;
+  --cat-otros: #64748b;
+  --cat-arriendo: #ef4444;
+
+  /* Tipos de eventos */
+  --event-abono: #22c55e;
+  --event-limpieza: #3b82f6;
+  --event-cosecha: #f59e0b;
+  --event-pago: #ef4444;
+  --event-siembra: #8b5cf6;
+  --event-otro: #64748b;
+
+  /* Espaciado */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+
+  /* Tipografía */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+
+  /* Bordes */
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  /* Sombras */
+  --shadow-xs: 0 1px 2px rgba(0,0,0,.05);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+  --shadow: 0 4px 6px -1px rgba(0,0,0,.07), 0 2px 4px -1px rgba(0,0,0,.04);
+  --shadow-lg: 0 10px 25px -5px rgba(0,0,0,.08), 0 4px 10px -5px rgba(0,0,0,.05);
+  --shadow-xl: 0 20px 40px -10px rgba(0,0,0,.12);
+
+  /* Sidebar */
+  --sidebar-width: 240px;
+  --sidebar-collapsed: 64px;
+
+  /* Header */
+  --header-height: 60px;
+
+  /* Transiciones */
+  --transition: 150ms ease;
+  --transition-md: 250ms ease;
+}
+
+/* Tema oscuro automático */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #0f172a;
+    --color-bg-secondary: #1e293b;
+    --color-bg-tertiary: #0f172a;
+    --color-surface: #1e293b;
+    --color-surface-hover: #273549;
+    --color-border: #334155;
+    --color-border-strong: #475569;
+
+    --color-text: #f1f5f9;
+    --color-text-secondary: #94a3b8;
+    --color-text-tertiary: #64748b;
+
+    --color-primary-light: #14532d;
+    --color-primary-subtle: #052e16;
+    --color-accent-light: #451a03;
+
+    --color-success-bg: #052e16;
+    --color-warning-bg: #451a03;
+    --color-danger-bg: #450a0a;
+    --color-info-bg: #0c1a3d;
+
+    --shadow-xs: 0 1px 2px rgba(0,0,0,.3);
+    --shadow-sm: 0 1px 3px rgba(0,0,0,.4);
+    --shadow: 0 4px 6px -1px rgba(0,0,0,.4);
+    --shadow-lg: 0 10px 25px -5px rgba(0,0,0,.5);
+  }
+}
+
+/* Override tema oscuro manual */
+[data-theme="dark"] {
+  --color-bg: #0f172a;
+  --color-bg-secondary: #1e293b;
+  --color-bg-tertiary: #0f172a;
+  --color-surface: #1e293b;
+  --color-surface-hover: #273549;
+  --color-border: #334155;
+  --color-border-strong: #475569;
+  --color-text: #f1f5f9;
+  --color-text-secondary: #94a3b8;
+  --color-text-tertiary: #64748b;
+  --color-primary-light: #14532d;
+  --color-primary-subtle: #052e16;
+  --color-accent-light: #451a03;
+  --color-success-bg: #052e16;
+  --color-warning-bg: #451a03;
+  --color-danger-bg: #450a0a;
+  --color-info-bg: #0c1a3d;
+}
+
+[data-theme="light"] {
+  --color-bg: #f5f7fa;
+  --color-bg-secondary: #ffffff;
+  --color-surface: #ffffff;
+  --color-border: #e2e8f0;
+  --color-text: #1e293b;
+  --color-text-secondary: #64748b;
+}

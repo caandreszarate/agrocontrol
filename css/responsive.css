@@ -1,0 +1,79 @@
+/* ===================================================
+   Responsive — Mobile First
+   =================================================== */
+
+@media (max-width: 1024px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .grid-kpi { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  /* Sidebar overlay mode */
+  .sidebar {
+    transform: translateX(-100%);
+    box-shadow: var(--shadow-xl);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .main-wrapper {
+    margin-left: 0;
+  }
+
+  .menu-toggle { display: flex; }
+
+  /* Grids */
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .grid-kpi { grid-template-columns: repeat(2, 1fr); }
+
+  /* Page */
+  .page-content { padding: var(--space-4); }
+  .page-header { flex-direction: column; }
+  .page-header .btn { width: 100%; justify-content: center; }
+
+  /* Forms */
+  .form-row { grid-template-columns: 1fr; }
+
+  /* Filters */
+  .filters-bar { flex-direction: column; align-items: stretch; }
+  .filters-bar select,
+  .filters-bar input { width: 100%; min-width: auto; }
+
+  /* Tables */
+  .table-wrapper { font-size: var(--text-xs); }
+  th, td { padding: var(--space-2) var(--space-3); }
+
+  /* Header */
+  .header { padding: 0 var(--space-4); }
+
+  /* Calendar */
+  .calendar-day { min-height: 50px; }
+  .day-event-dot { display: none; }
+  .calendar-day.has-events::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-primary);
+  }
+
+  /* Modal */
+  .modal { max-width: 100%; border-radius: var(--radius-xl) var(--radius-xl) 0 0; }
+  .modal-backdrop { align-items: flex-end; padding: 0; }
+
+  /* Login */
+  .login-card { padding: var(--space-6) var(--space-5); }
+}
+
+@media (max-width: 480px) {
+  .grid-kpi { grid-template-columns: 1fr; }
+  .kpi-value { font-size: var(--text-xl); }
+  .toast-container { left: var(--space-4); right: var(--space-4); bottom: var(--space-4); }
+  .toast { max-width: 100%; }
+}
